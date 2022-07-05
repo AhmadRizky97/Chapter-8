@@ -1,0 +1,455 @@
+{
+  "swagger": "1.0",
+  "info": {
+    "description": "This is a sample server",
+    "version": "1.0.0",
+    "title": "Binar Challenge",
+    "termsOfService": "https://github.com/berbinarbinar/binar-challenge-chapter-8/issues",
+    "contact": {
+      "email": "arizky241097@gmail.com"
+    },
+    "license": {
+      "name": "Binar 1.0",
+      "url": "https://github.com/berbinarbinar/binar-challenge-chapter-8.git"
+    }
+  },
+  "host": "binar.io",
+  "basePath": "/players",
+  "tags": [
+    {
+      "name": "Players",
+      "description": "Everything about Players",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://binar.io"
+      }
+    }
+  ],
+  "schemes": [
+    "https",
+    "http"
+  ],
+  "paths": {
+    "/players": {
+      "post": {
+        "tags": [
+          "players"
+        ],
+        "summary": "Add a new player to the game",
+        "description": "",
+        "operationId": "game",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Players object that needs to be added to the store",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/players"
+            }
+          }
+        ],
+        "responses": {
+          "405": {
+            "description": "Invalid input"
+          }
+        },
+        "security": [
+          {
+            "playerstore_auth": [
+              "write:players",
+              "read:players"
+            ]
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "players"
+        ],
+        "summary": "Update an existing players",
+        "description": "",
+        "operationId": "updatePlayers",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Players object that needs to be added to the game",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/players"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Players not found"
+          },
+          "405": {
+            "description": "Validation exception"
+          }
+        },
+        "security": [
+          {
+            "playerstore_auth": [
+              "write:players",
+              "read:players"
+            ]
+          }
+        ]
+      }
+    },
+    "/players/{playersId}": {
+      "get": {
+        "tags": [
+          "players"
+        ],
+        "summary": "Find players by ID",
+        "description": "Returns a single players",
+        "operationId": "getPlayersById",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "playersId",
+            "in": "path",
+            "description": "ID of players to return",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/players"
+            }
+          },
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Player not found"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "players"
+        ],
+        "summary": "Deletes a players",
+        "description": "",
+        "operationId": "deletePlayers",
+        "produces": [
+          "application/xml",
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "api_key",
+            "in": "header",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "playersId",
+            "in": "path",
+            "description": "Players id to delete",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Invalid ID supplied"
+          },
+          "404": {
+            "description": "Players not found"
+          }
+        },
+        "security": [
+          {
+            "playerstore_auth": [
+              "write:player",
+              "read:player"
+            ]
+          }
+        ]
+      }
+    },
+    "/players/exp/{playerId}": {
+      "post": {
+        "tags": [
+          "player"
+        ],
+        "summary": "Add Experience",
+        "description": "",
+        "operationId": "Upload Experience",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "playersId",
+            "in": "path",
+            "description": "ID of players to update",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "additionalMetadata",
+            "in": "formData",
+            "description": "Additional data to pass to server",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "file",
+            "in": "formData",
+            "description": "file to upload",
+            "required": false,
+            "type": "file"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ApiResponse"
+            }
+          }
+        },
+        "security": [
+          {
+            "playerstore_auth": [
+              "write:player",
+              "read:player"
+            ]
+          }
+        ]
+      }
+    },
+  "securityDefinitions": {
+    "playerstore_auth": {
+      "type": "oauth2",
+      "authorizationUrl": "http://playerstore.binar.io/oauth/dialog",
+      "flow": "implicit",
+      "scopes": {
+        "write:players": "modify players in your account",
+        "read:players": "read your players"
+      }
+    },
+    "api_key": {
+      "type": "apiKey",
+      "name": "api_key",
+      "in": "header"
+    }
+  },
+  "definitions": {
+    "Order": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "playerId": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "quantity": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "shipDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "status": {
+          "type": "string",
+          "description": "Order Status",
+          "enum": [
+            "placed",
+            "approved",
+            "delivered"
+          ]
+        },
+        "complete": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "xml": {
+        "name": "Order"
+      }
+    },
+    "Category": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "Category"
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "username": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "userStatus": {
+          "type": "integer",
+          "format": "int32",
+          "description": "User Status"
+        }
+      },
+      "xml": {
+        "name": "User"
+      }
+    },
+    "Tag": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "xml": {
+        "name": "Tag"
+      }
+    },
+    "Player": {
+      "type": "object",
+      "required": [
+        "name",
+        "photoUrls"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "category": {
+          "$ref": "#/definitions/Category"
+        },
+        "name": {
+          "type": "string",
+          "example": "doggie"
+        },
+        "photoUrls": {
+          "type": "array",
+          "xml": {
+            "name": "photoUrl",
+            "wrapped": true
+          },
+          "items": {
+            "type": "string"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "xml": {
+            "name": "tag",
+            "wrapped": true
+          },
+          "items": {
+            "$ref": "#/definitions/Tag"
+          }
+        },
+        "status": {
+          "type": "string",
+          "description": "player status in the store",
+          "enum": [
+            "available",
+            "pending",
+            "sold"
+          ]
+        }
+      },
+      "xml": {
+        "name": "Player"
+      }
+    },
+    "ApiResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "type": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "externalDocs": {
+    "description": "Find out more about Binar",
+    "url": "http://binar.io"
+  }
+}
